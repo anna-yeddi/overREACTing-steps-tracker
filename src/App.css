@@ -76,10 +76,15 @@ body {
 .form-input {
   display: block;
   width: 100%;
+  min-height: 3.5rem;
   border: 2px solid black;
   border-radius: 0.5rem;
+  background-color: white;
+  color: black;
+  margin-top: 1rem;
   padding: 0.75rem 0.5rem;
   font-size: 1rem;
+  font-family: 'Lato', Arial, sans-serif;
   font-weight: bolder;
   text-align: center;
   letter-spacing: 0.15rem;
@@ -88,16 +93,22 @@ body {
 .form-input:active,
 .form-input:focus,
 .form-input:hover {
-  background-color: black;
-  color: white;
+  border-bottom: thick solid black;
   font-weight: bold;
   outline: none;
 }
 
-.form-input::selection {
-  background-color: yellow;
-  color: black;
+/* .form-input-validity::after {
+  padding-left: 0.3125rem;
 }
+
+input.form-input:invalid + .form-input-validity::after {
+  content: '✖';
+}
+
+input.form-input:valid + .form-input-validity::after {
+  content: '✓';
+} */
 
 /* CTA Button */
 
@@ -106,21 +117,32 @@ body {
   padding: 0.75rem 1.25rem;
   border: 2px solid black;
   border-radius: 0.5rem;
-  background-color: transparent;
+  background-color: white;
+  color: black;
   font-weight: bolder;
   text-transform: uppercase;
   transition: all 0.2s;
+}
+
+.form-cta:active,
+.form-cta:focus,
+.form-cta:hover {
+  background-color: black;
+  color: white;
+  font-weight: bold;
+  outline: none;
 }
 
 /* Table */
 
 .table {
   margin: 0 auto;
+  min-width: 75%;
   border-collapse: collapse;
 }
 
 .table-headers {
-  padding: 0.5rem 1rem 1.5rem 1rem;
+  padding: 0.5rem 1rem 1rem 1rem;
 }
 
 .table-body {

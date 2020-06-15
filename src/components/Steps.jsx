@@ -5,7 +5,9 @@ import DayModel from '../models/DayModel'
 
 function Steps(props) {
   const emptyForm = { day: '', steps: 0 }
-  const [days, setDays] = useState([])
+  const [days, setDays] = useState([
+    { id: '007', day: '2020-06-07', steps: 2222 },
+  ])
   const [form, setForm] = useState(emptyForm)
 
   const handleChange = (e) => {
@@ -15,6 +17,14 @@ function Steps(props) {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
+    const daysAdded = (prevDays) =>
+      prevDays.map((o) =>
+        o.day === form.day
+          ? new DayModel(o.id, o.day, form.steps)
+          : new DayModel(nanoid(), form.day, form.steps)
+      )
+    console.log(daysAdded)
 
     setDays((prevDays) =>
       // const newDay = (id) => {
@@ -32,7 +42,7 @@ function Steps(props) {
       // newDayUpd(prevDays).sort((a, b) => {
       //   return a.day < b.day ? 1 : -1
       // })
-      [...prevDays, form].sort((a, b) => {
+      daysAdded(prevDays).sort((a, b) => {
         return a.day < b.day ? 1 : -1
       })
     )

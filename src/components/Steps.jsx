@@ -4,50 +4,51 @@ import { nanoid } from 'nanoid'
 import DayModel from '../models/DayModel'
 
 function Steps(props) {
+  // Clear the form when submitted:
   const emptyForm = { day: '', steps: 0 }
-  const [days, setDays] = useState([
-    { id: '007', day: '2020-06-07', steps: 2222 },
-  ])
+
+  const [days, setDays] = useState([])
   const [form, setForm] = useState(emptyForm)
+
+  // Update days data helper function for handleSubmit:
+  const daysUpdated = (arrDays) => {
+    const newArray = [...arrDays]
+
+    // Find if the day has been logged before:
+    const oi = arrDays.findIndex((o) => o.day === form.day)
+
+    if (oi === -1) {
+      // Add new object, if the day is not found:
+      newArray.push(new DayModel(nanoid(), form.day, parseInt(form.steps)))
+    } else if (oi >= 0) {
+      // Update value for the day, if the day has been logged:
+      newArray[oi] = {
+        ...newArray[oi],
+        steps: newArray[oi].steps + parseInt(form.steps, 10),
+      }
+    }
+
+    return newArray
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setForm((prevForm) => ({ ...prevForm, [name]: value }))
+    setForm((prevForm) => ({
+      ...prevForm,
+      [name]: value,
+    }))
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    const daysAdded = (prevDays) =>
-      prevDays.map((o) =>
-        o.day === form.day
-          ? new DayModel(o.id, o.day, form.steps)
-          : new DayModel(nanoid(), form.day, form.steps)
-      )
-    console.log(daysAdded)
-
+    // Sort updated days:
     setDays((prevDays) =>
-      // const newDay = (id) => {
-      //   return new DayModel(id, form.day, form.steps)
-      // }
-
-      // const newDayUpd = (prevDays) => {
-      //   prevDays.map((o) => {
-      //     console.log(o)
-      //     o.day === form.day ? newDay(o.id) : newDay(nanoid())
-      //   })
-      // }
-      // console.log(newDayUpd)
-
-      // newDayUpd(prevDays).sort((a, b) => {
-      //   return a.day < b.day ? 1 : -1
-      // })
-      daysAdded(prevDays).sort((a, b) => {
+      daysUpdated(prevDays).sort((a, b) => {
         return a.day < b.day ? 1 : -1
       })
     )
 
-    console.log(days)
     setForm(emptyForm)
   }
 
@@ -140,7 +141,7 @@ function Steps(props) {
             </tr>
           ))}
 
-          {/* Static: */}
+          {/* Static fillers: */}
           <tr>
             <th scope="row">06.14.2020</th>
             <td>2,035</td>

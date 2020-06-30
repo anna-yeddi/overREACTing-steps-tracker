@@ -2,12 +2,17 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { nanoid } from 'nanoid'
 import DayModel from '../models/DayModel'
+import DateInput from './DateInput'
+import StepsInput from './StepsInput'
+import EditBtn from './EditBtn'
+import RemoveBtn from './RemoveBtn'
 
 function Steps(props) {
   // Clear the form when submitted:
   const emptyForm = { day: '', steps: 0 }
 
-  const [days, setDays] = useState([])
+  // Set state including previous data
+  const [days, setDays] = useState(props.prevData)
   const [form, setForm] = useState(emptyForm)
 
   // Update days data helper function for handleSubmit:
@@ -31,8 +36,8 @@ function Steps(props) {
     return newArray
   }
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
+  const handleInput = (name, value) => {
+    // Update form state:
     setForm((prevForm) => ({
       ...prevForm,
       [name]: value,
@@ -66,36 +71,10 @@ function Steps(props) {
       <h1>Steps Tracker</h1>
       <form className="form" onSubmit={handleSubmit}>
         <div className="form-item">
-          {/* Localized constraints are provided by type="data"
-          <label htmlFor="day">Date (MM.DD.YY)</label> */}
-          <label htmlFor="day">Date</label>
-          <input
-            type="date"
-            name="day"
-            value={form.day}
-            id="day"
-            className="form-input"
-            // fallback support for type=text
-            // pattern="\d{4}-\d{2}-\d{2}"
-            min="1900-01-01"
-            required
-            onChange={handleChange}
-          />
-          {/* <span className="form-input-validity"></span> */}
+          <DateInput onInput={handleInput} day={form.day} />
         </div>
         <div className="form-item">
-          <label htmlFor="steps">Steps made</label>
-          <input
-            type="number"
-            name="steps"
-            value={form.steps}
-            id="steps"
-            className="form-input"
-            min="0"
-            required
-            onChange={handleChange}
-          />
-          {/* <span className="form-input-validity"></span> */}
+          <StepsInput onInput={handleInput} steps={form.steps} />
         </div>
         <button type="submit" className="form-item form-cta form-input">
           ADD
@@ -115,57 +94,30 @@ function Steps(props) {
           </tr>
         </thead>
         <tbody className="table-body">
-          {/* Dynamic: */}
           {days.map((o) => (
-            <tr>
+            <tr key={o.id}>
               <th scope="row">{o.day}</th>
               <td>{o.steps}</td>
               <td>
-                <button
-                  className="table-btn table-edit"
-                  onClick={() => handleEdit(o)}>
-                  <i className="material-icons" role="presentation">
-                    edit
-                  </i>
-                  <span className="sr-only">Edit</span>
-                </button>
-                <button
-                  className="table-btn table-remove"
-                  onClick={() => handleRemove(o.id)}>
-                  <i className="material-icons" role="presentation">
-                    clear
-                  </i>
-                  <span className="sr-only">Remove</span>
-                </button>
+                <EditBtn onEdit={handleEdit} el={o} />
+                <RemoveBtn onRemove={handleRemove} el={o} />
               </td>
             </tr>
           ))}
-
-          {/* Static fillers: */}
-          <tr>
-            <th scope="row">06.14.2020</th>
-            <td>2,035</td>
-            <td>
-              <button className="table-btn table-edit">
-                <i className="material-icons" role="presentation">
-                  edit
-                </i>
-                <span className="sr-only">Edit</span>
-              </button>
-              <button className="table-btn table-remove">
-                <i className="material-icons" role="presentation">
-                  clear
-                </i>
-                <span className="sr-only">Remove</span>
-              </button>
-            </td>
-          </tr>
         </tbody>
       </table>
     </div>
   )
 }
 
-Steps.propTypes = {}
+Steps.propTypes = {
+  prevData: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      day: PropTypes.string.isRequired,
+      steps: PropTypes.number.isRequired,
+    })
+  ),
+}
 
 export default Steps

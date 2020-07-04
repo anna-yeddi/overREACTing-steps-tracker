@@ -2,10 +2,8 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { nanoid } from 'nanoid'
 import DayModel from '../models/DayModel'
-import DateInput from './DateInput'
-import StepsInput from './StepsInput'
-import EditBtn from './EditBtn'
-import RemoveBtn from './RemoveBtn'
+import StepsForm from './StepsForm'
+import StepsTable from './StepsTable'
 
 function Steps(props) {
   // Clear the form when submitted:
@@ -24,13 +22,15 @@ function Steps(props) {
 
     if (oi === -1) {
       // Add new object, if the day is not found:
-      newArray.push(new DayModel(nanoid(), form.day, parseInt(form.steps)))
+      newArray.push(new DayModel(nanoid(), form.day, parseInt(form.steps, 10)))
     } else if (oi >= 0) {
-      // Update value for the day, if the day has been logged:
-      newArray[oi] = {
-        ...newArray[oi],
-        steps: newArray[oi].steps + parseInt(form.steps, 10),
-      }
+      // Update value for the day, by creating a new model,
+      // if the day has been logged:
+      newArray[oi] = new DayModel(
+        nanoid(),
+        form.day,
+        newArray[oi].steps + parseInt(form.steps, 10)
+      )
     }
     return newArray
   }
@@ -70,49 +70,24 @@ function Steps(props) {
   }
 
   const handleRemove = (id) => {
+    // props.handleRemove(id)
     setDays((prevDays) => prevDays.filter((o) => o.id !== id))
   }
 
   return (
     <div className="container">
       <h1>Steps Tracker</h1>
-      <form className="form" onSubmit={handleSubmit}>
-        <div className="form-item">
-          <DateInput onInput={handleInput} day={form.day} />
-        </div>
-        <div className="form-item">
-          <StepsInput onInput={handleInput} steps={form.steps} />
-        </div>
-        <button type="submit" className="form-item form-cta form-input">
-          ADD
-        </button>
-      </form>
+      <StepsForm
+        form={form}
+        handleInput={handleInput}
+        handleSubmit={handleSubmit}
+      />
 
-      <table className="table">
-        <thead>
-          <tr>
-            <th className="table-headers">Date</th>
-            <th scope="col" className="table-headers">
-              Steps made
-            </th>
-            <th scope="col" className="table-headers">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody className="table-body">
-          {days.map((o) => (
-            <tr key={o.id}>
-              <th scope="row">{o.day}</th>
-              <td>{o.steps.toLocaleString()}</td>
-              <td>
-                <EditBtn onEdit={handleEdit} el={o} />
-                <RemoveBtn onRemove={handleRemove} el={o} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <StepsTable
+        days={days}
+        handleEdit={handleEdit}
+        handleRemove={handleRemove}
+      />
     </div>
   )
 }

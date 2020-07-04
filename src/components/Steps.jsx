@@ -32,7 +32,6 @@ function Steps(props) {
         steps: newArray[oi].steps + parseInt(form.steps, 10),
       }
     }
-
     return newArray
   }
 
@@ -58,8 +57,16 @@ function Steps(props) {
   }
 
   const handleEdit = (o) => {
-    // setDays(prevDays => prevDays)
-    console.log('Handle me!')
+    // Remove the existent day from list:
+    handleRemove(o.id)
+
+    // Update form state with editing day:
+    setForm((prevForm) => ({
+      ...prevForm,
+      id: o.id,
+      day: o.day,
+      steps: parseInt(o.steps, 10),
+    }))
   }
 
   const handleRemove = (id) => {
@@ -97,7 +104,7 @@ function Steps(props) {
           {days.map((o) => (
             <tr key={o.id}>
               <th scope="row">{o.day}</th>
-              <td>{o.steps}</td>
+              <td>{o.steps.toLocaleString()}</td>
               <td>
                 <EditBtn onEdit={handleEdit} el={o} />
                 <RemoveBtn onRemove={handleRemove} el={o} />

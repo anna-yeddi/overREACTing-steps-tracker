@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 function StepsInput(props) {
   const handleChange = (e) => {
     const { name, value } = e.target
-    props.onInput(name, value)
+    props.onInput(name, parseInt(value, 10))
   }
 
   return (
